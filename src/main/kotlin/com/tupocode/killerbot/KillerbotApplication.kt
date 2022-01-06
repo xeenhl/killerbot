@@ -1,12 +1,23 @@
 package com.tupocode.killerbot
 
-import com.tupocode.killerbot.configuration.TelegramBotConfiguration
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
-import org.springframework.stereotype.Service
+
+
+@ConfigurationProperties("telegram")
+data class TelegramBotConfiguration(
+	var token: String = "",
+	var baseUrl: String = "",
+	var tokenUrlTemplate: String = "",
+	var getUpdate: String = "",
+	var getMe: String = "",
+	var timeout: Int = 0
+)
 
 @SpringBootApplication
+@EnableConfigurationProperties(TelegramBotConfiguration::class)
 class KillerbotApplication
 
 fun main(args: Array<String>) {

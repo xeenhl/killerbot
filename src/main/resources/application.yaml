@@ -1,0 +1,7 @@
+telegram:
+  token: DUMMY_TOKEN
+  baseUrl: https://api.telegram.org/
+  tokenUrlTemplate: bot%s/
+  getUpdate: getUpdates
+  getMe: getMe
+  timeout: 100
