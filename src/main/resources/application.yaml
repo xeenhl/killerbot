@@ -1,7 +1,7 @@
 telegram:
-  token: DUMMY_TOKEN
-  baseUrl: https://api.telegram.org/
-  tokenUrlTemplate: bot%s/
-  getUpdate: getUpdates
-  getMe: getMe
+  token: 5069886195:AAGC3LzYj17NKHfONxEiL8nqSNwmoSHPsAE
+  baseUrl: https://api.telegram.org/bot
+  getUpdate: /getUpdates
+  banUser: /banChatMember
+  getMe: /getMe
   timeout: 100
