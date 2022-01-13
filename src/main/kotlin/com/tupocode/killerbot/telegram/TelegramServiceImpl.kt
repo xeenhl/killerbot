@@ -13,14 +13,17 @@ import java.time.Instant
 import java.util.*
 
 @Service
-class TelegramServiceImpl(val configuration: TelegramBotConfiguration, val objectMapper: ObjectMapper) : TelegramService {
+class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMapper: ObjectMapper) : TelegramService {
 
     val client = HttpClient.newBuilder().build();
     var offset = 0L
+    final val baseUrl = "${configuration.baseUrl}${configuration.token}"
+    val banUserUrl = "$baseUrl${configuration.banUser}"
+    val getUpdateUrl = "$baseUrl${configuration.getUpdate}"
 
     override fun getUpdates(): UpdateResponse {
         val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            "${configuration.baseUrl}${configuration.token}${configuration.getUpdate}?offset=${offset}"))
+            "${getUpdateUrl}?offset=${offset}"))
             .build()
         val response = client.send(request, BodyHandlers.ofString()).body()
         val responses = objectMapper.readValue(response, UpdateResponse::class.java)
@@ -32,7 +35,7 @@ class TelegramServiceImpl(val configuration: TelegramBotConfiguration, val objec
 
     override fun banUser(chatId: Long, userId: Long, revoke: Boolean) {
         val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            "${configuration.baseUrl}${configuration.token}${configuration.banUser}?chat_id=${chatId}&user_id=${userId}&until_date=${Instant.now().plusSeconds(90).toEpochMilli()}&revoke_messages=${revoke}"))
+            "${banUserUrl}?chat_id=${chatId}&user_id=${userId}&until_date=${Instant.now().plusSeconds(90).toEpochMilli()}&revoke_messages=${revoke}"))
             .build()
 
         val response = client.send(request, BodyHandlers.ofString()).body()
