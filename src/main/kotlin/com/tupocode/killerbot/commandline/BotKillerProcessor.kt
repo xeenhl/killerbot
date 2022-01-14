@@ -1,4 +1,4 @@
-package com.tupocode.killerbot.commnadline
+package com.tupocode.killerbot.commandline
 
 import com.tupocode.killerbot.TelegramBotConfiguration
 import com.tupocode.killerbot.model.Message
@@ -22,7 +22,7 @@ class BotKillerProcessor(val telegramService: TelegramService, val properties: T
                 updates.result.map { it.message }
                     .filterNotNull()
                     .filter { it.newChatMember != null }
-                    .forEach { if(isBot(it) && !isKillerBot(it)) bandTheBot(it) else println("user ${it.newChatMember} is not a bot") }
+                    .forEach { if(isBot(it) && !isKillerBot(it)) banTheBot(it) else println("user ${it.newChatMember} is not a bot") }
             }
 
             Thread.sleep(5_000)
@@ -31,7 +31,7 @@ class BotKillerProcessor(val telegramService: TelegramService, val properties: T
 
     }
 
-    private fun bandTheBot(it: Message) {
+    private fun banTheBot(it: Message) {
         val response = telegramService.banUser(it.chat.id, it.newChatMember!!.id, true)
         if(response.ok) {
             telegramService.sendText(it.chat.id, "This chat is too small for two of us")
