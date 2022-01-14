@@ -7,6 +7,16 @@ data class UpdateResponse(
     @JsonProperty("result") val result: List<MessageResult>
 )
 
+data class SendTextResponse(
+    @JsonProperty("id") val ok: Boolean,
+    @JsonProperty("result") val result: MessageResult
+)
+
+data class BanBotResponse(
+    @JsonProperty("id") val ok: Boolean,
+    @JsonProperty("result") val result: Boolean
+)
+
 data class MessageResult(
     @JsonProperty("update_id") val updateId: Long,
     @JsonProperty("message") val message: Message? = null,

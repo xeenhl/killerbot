@@ -1,7 +1,9 @@
 telegram:
+  botid: 5069886195
   token: 5069886195:AAGC3LzYj17NKHfONxEiL8nqSNwmoSHPsAE
   baseUrl: https://api.telegram.org/bot
   getUpdate: /getUpdates
   banUser: /banChatMember
+  sendText: /sendMessage
   getMe: /getMe
   timeout: 100
