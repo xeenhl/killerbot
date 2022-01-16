@@ -1,0 +1,35 @@
+name: Publish to GitHub Docker Regestry
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+
+    - name: Authenticate to github docker
+      run: docker login docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_TOKEN
+      env: 
+        DOCKER_TOKEN: ${{ secrets.DOCKER_REGESTRY_TOKEN }}
+        DOCKER_USER: ${{secrets.DOCKER_REGESTRY_USER}}
+
+    - name: Build podcasta image
+      run: docker build -t docker.pkg.github.com/xeenhl/podcasta/killerbot:$VERSION .
+      env:
+        VERSION: ${{ steps.get_version.outputs.tag }}
+
+    - name: Push to GitHub Packages Regestry
+      run: docker push docker.pkg.github.com/xeenhl/podcasta/podcasts-service:$VERSION
+      env:
+        VERSION: ${{ steps.get_version.outputs.tag }}
