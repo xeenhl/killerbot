@@ -10,7 +10,7 @@ RUN ./gradlew assemble
 
 FROM openjdk:17-jdk-alpine
 
-COPY --from=builder /bot/src/build/libs/*.jar app.jar
+COPY --from=builder /bot/src/build/libs/*.jar /app.jar
 COPY --from=builder /bot/src/build/resources /resources
 
 ENTRYPOINT ["java","-jar","/app.jar"]
