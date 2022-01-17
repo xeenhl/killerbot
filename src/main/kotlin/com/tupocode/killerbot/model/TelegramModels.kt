@@ -41,7 +41,7 @@ data class Chat (
     @JsonProperty("id")
     val id: Long,
     @JsonProperty("title")
-    val title: String = "",
+    val title: String? = "",
     @JsonProperty("type")
     val type: String = ""
 )
