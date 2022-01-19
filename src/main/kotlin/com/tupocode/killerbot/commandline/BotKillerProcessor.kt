@@ -2,12 +2,13 @@ package com.tupocode.killerbot.commandline
 
 import com.tupocode.killerbot.TelegramBotConfiguration
 import com.tupocode.killerbot.model.Message
+import com.tupocode.killerbot.telegram.RandomPhraseService
 import com.tupocode.killerbot.telegram.TelegramService
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
 @Component
-class BotKillerProcessor(val telegramService: TelegramService, val properties: TelegramBotConfiguration) : CommandLineRunner {
+class BotKillerProcessor(val telegramService: TelegramService, val properties: TelegramBotConfiguration, val randomPhraseService: RandomPhraseService) : CommandLineRunner {
     override fun run(vararg args: String?) {
         var running = true
 
@@ -34,7 +35,7 @@ class BotKillerProcessor(val telegramService: TelegramService, val properties: T
     private fun banTheBot(it: Message) {
         val response = telegramService.banUser(it.chat.id, it.newChatMember!!.id, true)
         if(response.ok) {
-            telegramService.sendText(it.chat.id, "This chat is too small for two of us")
+            telegramService.sendText(it.chat.id, randomPhraseService.getRandomPhrase())
         }
     }
 }
