@@ -12,14 +12,14 @@ jobs:
     steps:
 
       - name: Checkout main
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Get the version
         id: get_version
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
 
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/killerbot:$VERSION .
+        run: docker build -t registry.digitalocean.com/killerbot:${{ github.event.release.tag_name }} .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -30,7 +30,7 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/killerbot:$(echo $VERSION | head -c7)
+        run: docker push registry.digitalocean.com/killerbot:${{ github.event.release.tag_name }}
 
       - name: Update deployment file
         run: TAG=$(echo $VERSION | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/asb/static-example:'${TAG}'|' $GITHUB_WORKSPACE/deployment.yml
