@@ -19,7 +19,7 @@ jobs:
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
 
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/killerbot:$(echo $VERSION | head -c7) .
+        run: docker build -t registry.digitalocean.com/killerbot:$VERSION .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
