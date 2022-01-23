@@ -32,6 +32,9 @@ jobs:
       - name: Push image to DigitalOcean Container Registry
         run: docker push registry.digitalocean.com/killerbot/bot:${{ github.event.release.tag_name }}
 
+      - name: debug
+        run: ls -la
+
       - name: Update deployment file
         run: TAG=${{ github.event.release.tag_name }} && sed -i 's|<IMAGE>|registry.digitalocean.com/asb/static-example:'${TAG}'|' deployment.yml
 
