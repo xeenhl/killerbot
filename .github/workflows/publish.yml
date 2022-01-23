@@ -33,7 +33,7 @@ jobs:
         run: docker push registry.digitalocean.com/killerbot/bot:${{ github.event.release.tag_name }}
 
       - name: Update deployment file
-        run: TAG=${{ github.event.release.tag_name }} && sed 's|<IMAGE>|registry.digitalocean.com/killerbot/bot:'${TAG}'|' $GITHUB_WORKSPACE/deployment.yaml
+        run: TAG=${{ github.event.release.tag_name }} && sed 's|<IMAGE>|12|' $GITHUB_WORKSPACE/deployment.yaml
 
       - name: debug cat deployment.yaml
         run: cat deployment.yaml
