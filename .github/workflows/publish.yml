@@ -33,10 +33,13 @@ jobs:
         run: docker push registry.digitalocean.com/killerbot/bot:${{ github.event.release.tag_name }}
 
       - name: Update deployment file
-        run: TAG=${{ github.event.release.tag_name }} && sed -i 's|<IMAGE>|registry.digitalocean.com/killerbot/bot:'${TAG}'|' deployment.yaml
+        run: TAG=${{ github.event.release.tag_name }} && sed -i 's|<IMAGE>|registry.digitalocean.com/killerbot/bot:'${TAG}'|g' deployment.yaml
 
-      - name: debug
+      - name: debug cat deployment.yaml
         run: cat deployment.yaml
+
+      - name: debug ls -la
+        run: ls -la
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 k8s-bots
