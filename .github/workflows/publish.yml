@@ -32,13 +32,12 @@ jobs:
       - name: Push image to DigitalOcean Container Registry
         run: docker push registry.digitalocean.com/killerbot/bot:${{ github.event.release.tag_name }}
 
-      - uses: actions/checkout@v2
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "<IMAGE>"
           replace: "registry.digitalocean.com/killerbot/bot:'${{ github.event.release.tag_name }}'"
-          include: "deployment.yaml"
+          include: "**deployment.yaml"
           regex: false
 
       - name: debug cat deployment.yaml
