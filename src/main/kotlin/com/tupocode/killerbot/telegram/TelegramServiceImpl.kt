@@ -3,9 +3,7 @@ package com.tupocode.killerbot.telegram
 import com.fasterxml.jackson.databind.DatabindException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tupocode.killerbot.TelegramBotConfiguration
-import com.tupocode.killerbot.model.BanBotResponse
-import com.tupocode.killerbot.model.SendTextResponse
-import com.tupocode.killerbot.model.UpdateResponse
+import com.tupocode.killerbot.model.*
 import org.springframework.stereotype.Service
 import java.net.URI
 import java.net.URLEncoder
@@ -24,6 +22,7 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
     val banUserUrl = "$baseUrl${configuration.banUser}"
     val sendTextUrl = "$baseUrl${configuration.sendText}"
     val getUpdateUrl = "$baseUrl${configuration.getUpdate}"
+    val promoteUserUrl = "$baseUrl${configuration.promoteUser}"
 
     override fun getUpdates(): UpdateResponse {
         val request = HttpRequest.newBuilder().GET().uri(URI.create(
@@ -55,6 +54,31 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
 
         val res = client.send(request, BodyHandlers.ofString()).body()
         val response = objectMapper.readValue(res, SendTextResponse::class.java)
+        return response
+    }
+
+    override fun grantPermissionsToUser(chatId: Long, userId: Long, rights: ChatPermissions): GrantPermissionsResponse {
+        val request = HttpRequest.newBuilder().GET().uri(URI.create(
+            """
+                ${promoteUserUrl}
+                ?chat_id=$chatId
+                &user_id=$userId
+                &can_manage_chat=${rights.can_manage_chat}
+                &can_post_messages=${rights.can_post_messages}
+                &can_edit_messages=${rights.can_edit_messages}
+                &can_delete_messages=${rights.can_delete_messages}
+                &can_manage_voice_chats=${rights.can_manage_voice_chats}
+                &can_restrict_members=${rights.can_restrict_members}
+                &can_promote_members=${rights.can_promote_members}
+                &can_change_info=${rights.can_change_info}
+                &can_invite_users=${rights.can_invite_users}
+                &can_edit_messages=${rights.can_edit_messages}
+                &can_pin_messages=${rights.can_pin_messages}
+            """.trimMargin()))
+            .build()
+
+        val res = client.send(request, BodyHandlers.ofString()).body()
+        val response = objectMapper.readValue(res, GrantPermissionsResponse::class.java)
         return response
     }
 }
