@@ -25,4 +25,4 @@ spec:
           resources: {}
           imagePullPolicy: Always
       imagePullSecrets:
-        - name: asb
+        - name: killerbot
