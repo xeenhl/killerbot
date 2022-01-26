@@ -37,7 +37,7 @@ jobs:
 
       - name: debug cat deployment.yaml
         run: cat deployment.yaml
-w
+
       - name: debug ls -la
         run: ls -la
 
