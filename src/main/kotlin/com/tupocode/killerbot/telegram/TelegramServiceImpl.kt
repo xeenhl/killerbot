@@ -1,6 +1,5 @@
 package com.tupocode.killerbot.telegram
 
-import com.fasterxml.jackson.databind.DatabindException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.tupocode.killerbot.TelegramBotConfiguration
 import com.tupocode.killerbot.model.*
@@ -11,7 +10,6 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.*
 import java.time.Instant
-import java.util.*
 
 @Service
 class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMapper: ObjectMapper) : TelegramService {
@@ -25,9 +23,11 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
     val promoteUserUrl = "$baseUrl${configuration.promoteUser}"
 
     override fun getUpdates(): UpdateResponse {
-        val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            "${getUpdateUrl}?offset=${offset}"))
-            .build()
+        val request = HttpRequest.newBuilder().GET().uri(
+            URIBuilder(getUpdateUrl)
+                .param("offset", offset)
+                .build()
+        ).build()
         val res = client.send(request, BodyHandlers.ofString()).body()
         val response = objectMapper.readValue(res, UpdateResponse::class.java)
 
@@ -37,8 +37,13 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
     }
 
     override fun banUser(chatId: Long, userId: Long, revoke: Boolean) : BanBotResponse {
-        val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            "${banUserUrl}?chat_id=$chatId&user_id=$userId&until_date=${Instant.now().plusSeconds(90).toEpochMilli()}&revoke_messages=$revoke"))
+        val request = HttpRequest.newBuilder().GET().uri(
+            URIBuilder(banUserUrl)
+                .param("chat_id", chatId)
+                .param("user_id", userId)
+                .param("until_date", Instant.now().plusSeconds(90).toEpochMilli())
+                .param("revoke_messages", revoke)
+                .build())
             .build()
 
         val res = client.send(request, BodyHandlers.ofString()).body()
@@ -48,8 +53,11 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
 
     override fun sendText(chatId: Long, text: String) : SendTextResponse {
         val encoded = URLEncoder.encode(text, "UTF-8")
-        val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            "${sendTextUrl}?chat_id=$chatId&text=$encoded"))
+        val request = HttpRequest.newBuilder().GET().uri(
+            URIBuilder(sendTextUrl)
+                .param("chat_id", chatId)
+                .param("text", encoded)
+                .build())
             .build()
 
         val res = client.send(request, BodyHandlers.ofString()).body()
@@ -58,27 +66,43 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
     }
 
     override fun grantPermissionsToUser(chatId: Long, userId: Long, rights: ChatPermissions): GrantPermissionsResponse {
-        val request = HttpRequest.newBuilder().GET().uri(URI.create(
-            """
-                ${promoteUserUrl}
-                ?chat_id=$chatId
-                &user_id=$userId
-                &can_manage_chat=${rights.can_manage_chat}
-                &can_post_messages=${rights.can_post_messages}
-                &can_edit_messages=${rights.can_edit_messages}
-                &can_delete_messages=${rights.can_delete_messages}
-                &can_manage_voice_chats=${rights.can_manage_voice_chats}
-                &can_restrict_members=${rights.can_restrict_members}
-                &can_promote_members=${rights.can_promote_members}
-                &can_change_info=${rights.can_change_info}
-                &can_invite_users=${rights.can_invite_users}
-                &can_edit_messages=${rights.can_edit_messages}
-                &can_pin_messages=${rights.can_pin_messages}
-            """.trimMargin()))
+        val request = HttpRequest.newBuilder().GET().uri(
+            URIBuilder(promoteUserUrl)
+                .param("chat_id", chatId)
+                .param("user_id", userId)
+                .param("can_manage_chat", rights.can_manage_chat)
+                .param("can_post_messages", rights.can_post_messages)
+                .param("can_edit_messages", rights.can_edit_messages)
+                .param("can_delete_messages", rights.can_delete_messages)
+                .param("can_manage_voice_chats", rights.can_manage_voice_chats)
+                .param("can_restrict_members", rights.can_restrict_members)
+                .param("can_promote_members", rights.can_promote_members)
+                .param("can_change_info", rights.can_change_info)
+                .param("can_invite_users", rights.can_invite_users)
+                .param("can_edit_messages", rights.can_edit_messages)
+                .param("can_pin_messages", rights.can_pin_messages)
+                .build())
             .build()
 
         val res = client.send(request, BodyHandlers.ofString()).body()
         val response = objectMapper.readValue(res, GrantPermissionsResponse::class.java)
         return response
+    }
+
+    class URIBuilder internal constructor (url: String) {
+
+        private val builder = StringBuilder(url)
+        private var firstParam = true
+        fun param(paramKey: String, paramVal: Any) : URIBuilder {
+            if(firstParam) {
+                builder.append("?$paramKey=$paramVal")
+                firstParam = false
+            } else {
+                builder.append("&$paramKey=$paramVal")
+            }
+
+            return this
+        }
+        fun build() : URI = URI.create(builder.toString())
     }
 }

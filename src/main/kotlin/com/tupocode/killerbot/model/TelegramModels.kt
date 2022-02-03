@@ -39,7 +39,9 @@ data class Message (
     @JsonProperty("text")
     val text: String? = "",
     @JsonProperty("new_chat_member")
-    val newChatMember: NewChatMember? = null
+    val newChatMember: NewChatMember? = null,
+    @JsonProperty("reply_to_message")
+    val replayToMessage: Message? = null
 )
 
 data class Chat (
