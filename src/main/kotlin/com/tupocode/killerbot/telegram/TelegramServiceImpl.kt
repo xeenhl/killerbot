@@ -65,6 +65,21 @@ class TelegramServiceImpl(configuration: TelegramBotConfiguration, val objectMap
         return response
     }
 
+    override fun replyToMessage(chatId: Long, replyToId: Long, text: String): SendTextResponse {
+        val encoded = URLEncoder.encode(text, "UTF-8")
+        val request = HttpRequest.newBuilder().GET().uri(
+            URIBuilder(sendTextUrl)
+                .param("chat_id", chatId)
+                .param("text", encoded)
+                .param("reply_to_message_id", replyToId)
+                .build())
+            .build()
+
+        val res = client.send(request, BodyHandlers.ofString()).body()
+        val response = objectMapper.readValue(res, SendTextResponse::class.java)
+        return response
+    }
+
     override fun grantPermissionsToUser(chatId: Long, userId: Long, rights: ChatPermissions): GrantPermissionsResponse {
         val request = HttpRequest.newBuilder().GET().uri(
             URIBuilder(promoteUserUrl)

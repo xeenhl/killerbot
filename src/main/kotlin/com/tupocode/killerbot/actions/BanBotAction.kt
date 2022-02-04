@@ -5,9 +5,10 @@ import com.tupocode.killerbot.model.Message
 import com.tupocode.killerbot.telegram.RandomPhraseService
 import com.tupocode.killerbot.telegram.TelegramService
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 
-@Service
+@Component
 class BanBotAction(val properties: TelegramBotConfiguration,
                    val telegramService: TelegramService,
                    val randomPhraseService: RandomPhraseService) : Action<Message> {

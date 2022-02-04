@@ -1,17 +1,24 @@
 package com.tupocode.killerbot.actions
 
 import com.tupocode.killerbot.model.Message
-import org.springframework.stereotype.Service
+import com.tupocode.killerbot.riddle.AskedRiddleCache
+import com.tupocode.killerbot.riddle.RiddleService
+import com.tupocode.killerbot.telegram.TelegramService
+import org.springframework.stereotype.Component
 
-@Service
-class GiveAdminRequestAction : Action<Message> {
+@Component
+class GiveAdminRequestAction(val riddleService: RiddleService,
+                             val askedRiddleCache: AskedRiddleCache,
+                             val telegramService: TelegramService) : Action<Message> {
 
     override fun label(): Label = Label.ASK_ADMIN
 
     override fun apply(data: Message): Boolean {
-        // log chatId, userid, and quizId for future check
-        // send quiz to chat
-        TODO("Not yet implemented")
+
+        val riddle = riddleService.getNextRiddle()
+        askedRiddleCache.cacheRiddle(data.chat.id, data.from.id, riddle)
+        telegramService.replyToMessage(data.chat.id, data.messageId,"Отгадай загадку: \n${riddle.question}")
+        return true
     }
 
 }
