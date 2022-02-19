@@ -3,17 +3,22 @@ package com.tupocode.killerbot.model
 import com.fasterxml.jackson.annotation.*
 
 data class UpdateResponse(
-    @JsonProperty("id") val ok: Boolean,
+    @JsonProperty("ok") val ok: Boolean,
     @JsonProperty("result") val result: List<MessageResult>
 )
 
 data class SendTextResponse(
-    @JsonProperty("id") val ok: Boolean,
+    @JsonProperty("ok") val ok: Boolean,
     @JsonProperty("result") val result: MessageResult
 )
 
 data class BanBotResponse(
-    @JsonProperty("id") val ok: Boolean,
+    @JsonProperty("ok") val ok: Boolean,
+    @JsonProperty("result") val result: Boolean
+)
+
+data class GrantPermissionsResponse(
+    @JsonProperty("ok") val ok: Boolean,
     @JsonProperty("result") val result: Boolean
 )
 
@@ -34,7 +39,9 @@ data class Message (
     @JsonProperty("text")
     val text: String? = "",
     @JsonProperty("new_chat_member")
-    val newChatMember: NewChatMember? = null
+    val newChatMember: NewChatMember? = null,
+    @JsonProperty("reply_to_message")
+    val replayToMessage: Message? = null
 )
 
 data class Chat (

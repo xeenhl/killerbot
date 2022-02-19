@@ -17,6 +17,7 @@ data class TelegramBotConfiguration(
 	var getUpdate: String = "",
 	var banUser: String = "",
 	var sendText: String = "",
+	var promoteUser: String = "",
 	var getMe: String = "",
 	var timeout: Int = 0
 )
