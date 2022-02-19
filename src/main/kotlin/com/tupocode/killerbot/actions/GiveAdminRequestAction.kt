@@ -2,12 +2,12 @@ package com.tupocode.killerbot.actions
 
 import com.tupocode.killerbot.model.Message
 import com.tupocode.killerbot.riddle.AskedRiddleCache
-import com.tupocode.killerbot.riddle.RiddleService
+import com.tupocode.killerbot.riddle.RiddlegameService
 import com.tupocode.killerbot.telegram.TelegramService
 import org.springframework.stereotype.Component
 
 @Component
-class GiveAdminRequestAction(val riddleService: RiddleService,
+class GiveAdminRequestAction(val riddleService: RiddlegameService,
                              val askedRiddleCache: AskedRiddleCache,
                              val telegramService: TelegramService) : Action<Message> {
 

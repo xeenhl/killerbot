@@ -4,7 +4,7 @@ import com.tupocode.killerbot.model.Riddle
 import org.springframework.stereotype.Service
 
 @Service
-class RiddleServiceImpl : RiddleService {
+class RiddleServiceImpl : RiddlegameService {
 
     override fun getNextRiddle(): Riddle {
         return Riddle(10, "Зимой и летом одним цветом", "Джира")
